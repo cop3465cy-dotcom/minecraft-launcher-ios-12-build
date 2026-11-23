@@ -27,7 +27,7 @@ jobs:
         run: |
           cd Engine/PojavLegacy
           export BOOTJDK="$JAVA_HOME/bin"
-          gmake -j2 JOBS=2 RELEASE=1 package PLATFORM=2
+          gmake -j2 JOBS=2 RELEASE=1 package PLATFORM=2 BRANCH="$GITHUB_REF_NAME" COMMIT="$(git rev-parse --short HEAD)"
           cp artifacts/net.kdt.pojavlauncher-2.2-ios.ipa "$GITHUB_WORKSPACE/Blockside-Java-Edition.ipa"
 
       - name: Upload iOS device IPA
