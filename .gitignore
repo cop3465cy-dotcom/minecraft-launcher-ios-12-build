@@ -3,3 +3,7 @@ DerivedData/
 build/
 *.xcuserstate
 xcuserdata/
+artifacts/
+Engine/PojavLegacy/depends/
+Engine/PojavLegacy/Natives/build/
+Engine/PojavLegacy/JavaApp/local_out/

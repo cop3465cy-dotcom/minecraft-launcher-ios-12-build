@@ -1,34 +1,28 @@
-# Blockside — iOS 12 Minecraft Companion
+# Blockside — Minecraft: Java Edition for iOS
 
-Blockside is a native Swift/UIKit launcher interface and local content manager for iPhone and iPad. It targets iOS 12.0 and uses no third-party dependencies.
+Blockside is a custom iPhone/iPad launcher interface built around the PojavLauncher iOS v2.2 engine. The engine starts real Minecraft: Java Edition using an iOS ARM64 OpenJDK runtime and the upstream native rendering/input stack. It does not bundle Minecraft game files: a player signs in and obtains game assets from the official distribution services.
 
-## Important: what this app does
+## iOS compatibility
 
-This project provides a launcher-style interface, local inventory, document import, backups, pack organization, and URL downloads. It does **not** contain Minecraft, install or authenticate with Mojang/Microsoft, or execute Java Edition. iOS does not provide a supported way for this app to launch the official Minecraft game engine as a bundled runtime. The Play action therefore reports that no compatible playable installation/runtime is connected; it never pretends to start a game. Imported files are cataloged in the app sandbox and are not automatically installed into Minecraft.
+The legacy engine line targets **iOS 12.2 and later**. PojavLauncher dropped iOS 12/13 support in later versions and its iOS repository was archived; the supported iOS 12 line is therefore a legacy base. This build includes Java 8 and Java 17 runtimes. Game versions requiring newer Java runtimes are outside this build's supported range. Device performance and RAM also limit which versions can run well.
 
-The app supports local `.mcworld`, `.mcpack`, `.mcaddon`, `.zip`, and image imports for organizing files. Importing a file does not imply that its contents are compatible or enabled in Minecraft. Downloads are user-specified URL downloads, not game downloads. Verify sources and compatibility before use.
+The Java runtime uses JIT for usable game performance. iOS requires an appropriate JIT-enablement method; sideloading alone does not guarantee that JIT will be available. The compatible method depends on iOS version, signing method, and device setup.
 
-## Build
+## Build and install
 
-Open `Blockside.xcodeproj` in Xcode, select an iOS 12 compatible iPhone/iPad simulator or device, and build. The deployment target is iOS 12.0. No signing team is required for simulator builds. Device installation requires normal Apple code signing.
+The GitHub Actions workflow builds an iOS **device IPA** and uploads it as `Blockside-Java-Edition-iOS-12.2`. The artifact is a sideload package; it still needs a compatible signing and JIT setup for the target device. It is not a simulator app or a normal App Store install.
 
-### Building from Windows
+For a local macOS build, install Xcode, Java 8, CMake, `ldid`, GNU Make, and `wget`, then run:
 
-Apple does not provide `xcodebuild` for Windows, and its Command Line Tools package does not include `xcodebuild`. Use a Mac with Xcode installed, or push this project to a GitHub repository and run the included `.github/workflows/ios-build.yml` workflow on a macOS runner. The workflow builds an unsigned iOS Simulator app; it does not produce a signed device app.
+```sh
+cd Engine/PojavLegacy
+BOOTJDK="$(/usr/libexec/java_home -v 1.8)/bin" gmake -j2 JOBS=2 RELEASE=1 package PLATFORM=2
+```
 
-## Project structure
+The build downloads the required OpenJDK 8/17 runtime archives. The app downloads Minecraft version metadata, libraries, and assets at runtime after player sign-in.
 
-- `Blockside/AppDelegate.swift` — app entry point (no iOS 13 scene APIs)
-- `Blockside/RootTabBarController.swift` — native tab navigation
-- `Blockside/Views.swift` — reusable iOS 12 cards, colors, and controls
-- `Blockside/HomeViewController.swift` — dashboard and honest Play status
-- `Blockside/LibraryViewController.swift` — imports and local inventory
-- `Blockside/PacksViewController.swift` — pack organization and compatibility labels
-- `Blockside/DownloadsViewController.swift` — URLSession download list, retry, history
-- `Blockside/ProfileViewController.swift` — local/offline profile (no official auth)
-- `Blockside/SettingsViewController.swift` — theme, storage, and preferences
-- `Blockside/LibraryStore.swift` — sandbox persistence and document imports
+## Interface and engine
 
-## Compatibility and privacy
+`Blockside/` contains the earlier UIKit dashboard prototype. `Engine/PojavLegacy/` contains the active Java Edition engine and launcher. The dashboard redesign is being integrated into the engine's native iOS shell so the custom interface launches the real game.
 
-The app uses UIKit, URLSession, UserDefaults, UIDocumentPickerViewController, and FileManager APIs available on iOS 12. Appearance is selected explicitly because system-wide dark appearance APIs are newer than iOS 12. Imported files stay in this app's Documents directory unless removed in the app. Network transfers only occur after a user supplies a URL.
+The engine source is based on PojavLauncher iOS v2.2, commit `d9877bc423a4a66124f79e7403779652685ace2c`. It is licensed under GPL-3.0; see [`Engine/PojavLegacy/LICENSE`](Engine/PojavLegacy/LICENSE), [`Engine/PojavLegacy/README.md`](Engine/PojavLegacy/README.md), and [`Engine/PojavLegacy/BLOCKSIDE-CHANGES.md`](Engine/PojavLegacy/BLOCKSIDE-CHANGES.md). Third-party component notices are retained in the upstream README.

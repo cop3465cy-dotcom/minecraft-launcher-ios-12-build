@@ -1,4 +1,4 @@
-name: iOS simulator build
+name: Blockside Java Edition iOS build
 
 on:
   workflow_dispatch:
@@ -8,43 +8,28 @@ jobs:
   build:
     runs-on: macos-15-intel
     steps:
-      - uses: actions/checkout@v4
-      - name: Build Blockside for iOS Simulator
-        run: >-
-          xcodebuild
-          -project Blockside.xcodeproj
-          -scheme Blockside
-          -configuration Debug
-          -sdk iphonesimulator
-          -destination 'generic/platform=iOS Simulator'
-          -derivedDataPath build
-          CODE_SIGNING_ALLOWED=NO
-          build
-      - name: Upload simulator app
-        uses: actions/upload-artifact@v4
+      - name: Check out Blockside and engine sources
+        uses: actions/checkout@v4
+
+      - name: Set up Java 8 build toolchain
+        uses: actions/setup-java@v4
         with:
-          name: Blockside-iOS-Simulator
-          path: build/Build/Products/Debug-iphonesimulator/Blockside.app
-          if-no-files-found: error
-      - name: Build and package unsigned iOS IPA
+          distribution: temurin
+          java-version: '8'
+
+      - name: Install native build tools
+        run: brew install cmake ldid make wget
+
+      - name: Build iOS Java Edition launcher
         run: |
-          xcodebuild \
-            -project Blockside.xcodeproj \
-            -scheme Blockside \
-            -configuration Release \
-            -sdk iphoneos \
-            -destination 'generic/platform=iOS' \
-            -derivedDataPath device-build \
-            CODE_SIGNING_ALLOWED=NO \
-            CODE_SIGNING_REQUIRED=NO \
-            build
-          mkdir -p package/Payload
-          cp -R device-build/Build/Products/Release-iphoneos/Blockside.app package/Payload/
-          cd package
-          /usr/bin/zip -qry "$GITHUB_WORKSPACE/Blockside-unsigned.ipa" Payload
-      - name: Upload unsigned device IPA
+          cd Engine/PojavLegacy
+          export BOOTJDK="$JAVA_HOME/bin"
+          gmake -j2 JOBS=2 RELEASE=1 package PLATFORM=2
+          cp artifacts/net.kdt.pojavlauncher-2.2-ios.ipa "$GITHUB_WORKSPACE/Blockside-Java-Edition.ipa"
+
+      - name: Upload iOS device IPA
         uses: actions/upload-artifact@v4
         with:
-          name: Blockside-unsigned-IPA
-          path: Blockside-unsigned.ipa
+          name: Blockside-Java-Edition-iOS-12.2
+          path: Blockside-Java-Edition.ipa
           if-no-files-found: error
