@@ -1,0 +1,27 @@
+name: iOS simulator build
+
+on:
+  workflow_dispatch:
+  push:
+
+jobs:
+  build:
+    runs-on: macos-15
+    steps:
+      - uses: actions/checkout@v4
+      - name: Build Blockside for iOS Simulator
+        run: >-
+          xcodebuild
+          -project Blockside.xcodeproj
+          -target Blockside
+          -configuration Debug
+          -sdk iphonesimulator
+          -derivedDataPath build
+          CODE_SIGNING_ALLOWED=NO
+          build
+      - name: Upload simulator app
+        uses: actions/upload-artifact@v4
+        with:
+          name: Blockside-iOS-Simulator
+          path: build/Build/Products/Debug-iphonesimulator/Blockside.app
+          if-no-files-found: error
