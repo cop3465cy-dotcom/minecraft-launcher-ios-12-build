@@ -1,5 +1,8 @@
 name: Blockside Java Edition iOS build
 
+permissions:
+  contents: read
+
 on:
   workflow_dispatch:
   push:
@@ -33,3 +36,24 @@ jobs:
           name: Blockside-Java-Edition-iOS-12.2
           path: Blockside-Java-Edition.ipa
           if-no-files-found: error
+
+  draft-release:
+    if: startsWith(github.ref, 'refs/tags/v')
+    needs: build
+    runs-on: ubuntu-latest
+    permissions:
+      actions: read
+      contents: write
+    steps:
+      - name: Download device IPA artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: Blockside-Java-Edition-iOS-12.2
+
+      - name: Create draft GitHub Release
+        uses: softprops/action-gh-release@v2
+        with:
+          name: Blockside ${{ github.ref_name }}
+          draft: true
+          generate_release_notes: true
+          files: Blockside-Java-Edition.ipa

@@ -1,28 +1,62 @@
-# Blockside — Minecraft: Java Edition for iOS
+# Blockside
 
-Blockside is a custom iPhone/iPad launcher interface built around the PojavLauncher iOS v2.2 engine. The engine starts real Minecraft: Java Edition using an iOS ARM64 OpenJDK runtime and the upstream native rendering/input stack. It does not bundle Minecraft game files: a player signs in and obtains game assets from the official distribution services.
+![Blockside — Java Edition launcher for iPhone and iPad](docs/assets/blockside-cover.png)
 
-## iOS compatibility
+**A custom iPhone and iPad launcher interface for Minecraft: Java Edition, built on the PojavLauncher iOS engine.** This project is an independent community build. It is not made, approved, or supported by Mojang or Microsoft.
 
-The legacy engine line targets **iOS 12.2 and later**. PojavLauncher dropped iOS 12/13 support in later versions and its iOS repository was archived; the supported iOS 12 line is therefore a legacy base. This build includes Java 8 and Java 17 runtimes. Game versions requiring newer Java runtimes are outside this build's supported range. Device performance and RAM also limit which versions can run well.
+> **Preview art:** the cover and gallery images are original concept illustrations, not screenshots captured from a running device. The IPA build itself is real and was produced by GitHub Actions.
 
-The Java runtime uses JIT for usable game performance. iOS requires an appropriate JIT-enablement method; sideloading alone does not guarantee that JIT will be available. The compatible method depends on iOS version, signing method, and device setup.
+## Download and install
 
-## Build and install
+1. Open [Releases](https://github.com/cop3465cy-dotcom/minecraft-launcher-ios-12-build/releases). A release appears after a version tag is pushed and the draft is published by a maintainer.
+2. Download `Blockside-Java-Edition.ipa` to your iPhone or iPad.
+3. Install it with a trusted sideloading app such as [AltStore Classic](https://altstore.io/). The sideloading app signs the IPA for your device; this project does not include an Apple signing certificate.
+4. Follow the device-specific [installation guide](docs/INSTALL.md), then enable JIT using the Pojav iOS 12.2 instructions.
 
-The GitHub Actions workflow builds an iOS **device IPA** and uploads it as `Blockside-Java-Edition-iOS-12.2`. The artifact is a sideload package; it still needs a compatible signing and JIT setup for the target device. It is not a simulator app or a normal App Store install.
+The latest automated build can also be downloaded from [GitHub Actions](https://github.com/cop3465cy-dotcom/minecraft-launcher-ios-12-build/actions) while signed in. It is an IPA for sideloading, **not an App Store download or one-tap OTA install**. See [Downloads and releases](docs/DOWNLOAD.md).
 
-For a local macOS build, install Xcode, Java 8, CMake, `ldid`, GNU Make, and `wget`, then run:
+## What it runs
 
-```sh
-cd Engine/PojavLegacy
-BOOTJDK="$(/usr/libexec/java_home -v 1.8)/bin" gmake -j2 JOBS=2 RELEASE=1 package PLATFORM=2
-```
+- **Launcher interface:** Blockside’s custom UIKit dashboard and branding.
+- **Launcher engine:** the archived PojavLauncher iOS v2.2 project, modified and built as part of this repository.
+- **Game installation:** Minecraft Java versions are downloaded by the launcher after the player signs in. Game files are not included in this repository or IPA.
+- **Game engine:** the actual Minecraft Java client runs through the bundled iOS ARM64 Java and graphics stack. This is not a Java simulator or a native Mojang iOS game.
 
-The build downloads the required OpenJDK 8/17 runtime archives. The app downloads Minecraft version metadata, libraries, and assets at runtime after player sign-in.
+### Compatibility
 
-## Interface and engine
+- Minimum target: **iOS 12.2**. iOS 12.0 and 12.1 are not supported by this engine build.
+- Bundled Java runtimes: **Java 8 and Java 17**. Minecraft versions needing Java 21 (including Java Edition 1.20.5 and later) are unsupported by this build.
+- JIT is required for usable gameplay performance. The correct enablement method depends on iOS version, device, and sideload setup; see [JIT and compatibility](docs/COMPATIBILITY.md).
+- Older devices can have limited RAM, graphics support, and performance. Not every Java version, mod loader, server, or resource pack will work.
 
-`Blockside/` contains the earlier UIKit dashboard prototype. `Engine/PojavLegacy/` contains the active Java Edition engine and launcher. The dashboard redesign is being integrated into the engine's native iOS shell so the custom interface launches the real game.
+## Project gallery
 
-The engine source is based on PojavLauncher iOS v2.2, commit `d9877bc423a4a66124f79e7403779652685ace2c`. It is licensed under GPL-3.0; see [`Engine/PojavLegacy/LICENSE`](Engine/PojavLegacy/LICENSE), [`Engine/PojavLegacy/README.md`](Engine/PojavLegacy/README.md), and [`Engine/PojavLegacy/BLOCKSIDE-CHANGES.md`](Engine/PojavLegacy/BLOCKSIDE-CHANGES.md). Third-party component notices are retained in the upstream README.
+These are original **concept previews**, not gameplay or device screenshots. Capture real screenshots from a running build before presenting them as product screenshots.
+
+| Dashboard preview | App icon |
+| --- | --- |
+| ![Illustrative Blockside dashboard preview](docs/assets/home-preview.png) | ![Blockside app icon](docs/assets/blockside-icon.png) |
+
+## Guides
+
+- [Install on iPhone or iPad](docs/INSTALL.md)
+- [Download builds and releases](docs/DOWNLOAD.md)
+- [Compatibility, JIT, and known limitations](docs/COMPATIBILITY.md)
+- [Build from source](docs/BUILD.md)
+- [Publish a release and project site](docs/PUBLISHING.md)
+- [Frequently asked questions](docs/FAQ.md)
+- [Screenshot and media notes](docs/MEDIA.md)
+- [Release notes template](docs/RELEASE_NOTES_TEMPLATE.md)
+- [Project website source](docs/index.html)
+
+## Build
+
+The real device IPA is built by [`.github/workflows/ios-build.yml`](.github/workflows/ios-build.yml) on macOS. See [Build from source](docs/BUILD.md) for requirements and commands. The root `Blockside/` Xcode project is an earlier interface prototype; the active app and engine source are under `Engine/PojavLegacy/`.
+
+## Licensing and attribution
+
+The launcher is derived from PojavLauncher iOS v2.2 (commit `d9877bc423a4a66124f79e7403779652685ace2c`) and distributed under **GPL-3.0**. Source changes, upstream notices, and third-party license references are retained under [`Engine/PojavLegacy/`](Engine/PojavLegacy/); see also [`BLOCKSIDE-CHANGES.md`](Engine/PojavLegacy/BLOCKSIDE-CHANGES.md). The corresponding source must accompany distributed binaries. The original Blockside name and artwork do not imply affiliation with Mojang or Microsoft.
+
+## Status
+
+This is a legacy-compatible community launcher build, not an official Minecraft product. The CI build has completed, but gameplay has not been verified on a physical device. Read [the limitations](docs/COMPATIBILITY.md) before installing.

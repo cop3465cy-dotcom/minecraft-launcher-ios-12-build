@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024" role="img" aria-labelledby="t d">
+  <title id="t">Blockside app icon</title><desc id="d">A pixel letter B in cream and sage on a deep forest-green square.</desc>
+  <defs><linearGradient id="bg" x2="1" y2="1"><stop stop-color="#173b2d"/><stop offset="1" stop-color="#24543a"/></linearGradient></defs>
+  <rect width="1024" height="1024" rx="218" fill="url(#bg)"/>
+  <g fill="#e9edcf" transform="translate(236 204)">
+    <path d="M0 0h408v68H68v136h272v68H68v136h272v68H0z"/>
+    <path d="M340 68h68v136h-68zM340 272h68v136h-68z"/>
+  </g>
+  <g fill="#a9d18e"><rect x="236" y="204" width="68" height="68"/><rect x="576" y="340" width="68" height="68"/><rect x="576" y="544" width="68" height="68"/><rect x="236" y="680" width="68" height="68"/></g>
+  <rect x="420" y="806" width="184" height="20" rx="10" fill="#72be6d"/>
+</svg>
