@@ -298,7 +298,7 @@
     button.backgroundColor = background;
     button.layer.cornerRadius = 14;
     button.contentEdgeInsets = UIEdgeInsetsMake(15, 16, 15, 16);
-    button.heightAnchor.constraint(greaterThanOrEqualToConstant:50).active = YES;
+    [button.heightAnchor constraintGreaterThanOrEqualToConstant:50].active = YES;
     return button;
 }
 
