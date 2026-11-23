@@ -13,9 +13,10 @@ jobs:
         run: >-
           xcodebuild
           -project Blockside.xcodeproj
-          -target Blockside
+          -scheme Blockside
           -configuration Debug
           -sdk iphonesimulator
+          -destination 'generic/platform=iOS Simulator'
           -derivedDataPath build
           CODE_SIGNING_ALLOWED=NO
           build
