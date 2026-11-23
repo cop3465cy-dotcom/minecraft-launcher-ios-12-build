@@ -26,3 +26,25 @@ jobs:
           name: Blockside-iOS-Simulator
           path: build/Build/Products/Debug-iphonesimulator/Blockside.app
           if-no-files-found: error
+      - name: Build and package unsigned iOS IPA
+        run: |
+          xcodebuild \
+            -project Blockside.xcodeproj \
+            -scheme Blockside \
+            -configuration Release \
+            -sdk iphoneos \
+            -destination 'generic/platform=iOS' \
+            -derivedDataPath device-build \
+            CODE_SIGNING_ALLOWED=NO \
+            CODE_SIGNING_REQUIRED=NO \
+            build
+          mkdir -p package/Payload
+          cp -R device-build/Build/Products/Release-iphoneos/Blockside.app package/Payload/
+          cd package
+          /usr/bin/zip -qry "$GITHUB_WORKSPACE/Blockside-unsigned.ipa" Payload
+      - name: Upload unsigned device IPA
+        uses: actions/upload-artifact@v4
+        with:
+          name: Blockside-unsigned-IPA
+          path: Blockside-unsigned.ipa
+          if-no-files-found: error
